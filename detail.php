@@ -1,3 +1,37 @@
+<?php
+require 'config/config.php';
+session_start();
+if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
+  header('Location: login.php');
+}
+$pdostatement=$pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
+$pdostatement->execute();
+$result=$pdostatement->fetchAll();
+$blogId=$_GET['id'];
+$pdostatement1=$pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
+$pdostatement1->execute();
+$res=$pdostatement1->fetchAll();
+
+$authur=$res[0]['authur_id'];
+        $pdostatement=$pdo->prepare("SELECT * FROM users WHERE id=$authur");
+        $pdostatement->execute();
+        $Au=$pdostatement->fetchAll();
+if($_POST){
+  $comment=$_POST['comment'];
+  $pdostatement=$pdo->prepare("INSERT INTO comments(content,authur_id,post_id) VALUES(:content,:authur_id,:post_id)  ");
+        $result=$pdostatement->execute([
+            ":content"=>$comment,
+            ":authur_id"=>$_SESSION['user_id'],
+            ":post_id"=>$blogId,
+        ]);
+         
+  
+        if($result ){
+         header('Location: detail.php?id='.$blogId);
+      }
+      }
+    
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,11 +41,12 @@
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+ 
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
@@ -25,7 +60,7 @@
   
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style='margin-left: 0px!important;'>
     <!-- Content Header (Page header) -->
     
 
@@ -35,51 +70,38 @@
     <div class="col-md-12">
       <!-- Box Comment -->
       <div class="card card-widget">
-        
+       
         <div class="card-header" style="text-align:center !important;float:none;">
-              <h1>Blog title</h1>
+              <h1><?php echo $result[0]['title'];?> </h1>
           </div>
           <!-- /.user-block -->
         
           <!-- /.card-tools -->
         
         <!-- /.card-header -->
-        <div class="card-body">
-          <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-
-          <p>I took this photo this morning. What do you guys think?</p>
-          <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-          <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-          <span class="float-right text-muted">127 likes - 3 comments</span>
-        </div>
+        <div class="card-body img-fluid">
+          <img  class="img-fluid" src="images/<?php echo $result[0]['image']?>" alt="Photo"  >
+          <br>
+          <hr>
+          <p><?php echo $result[0]['content'];?></p>
+           <br>
+           <hr>
+           <h2>Comment</h2>
+           <a href="index.php" class="btn btn-default">Go Back</a>
+    </hr>
         <!-- /.card-body -->
         <div class="card-footer card-comments">
+        
           <div class="card-comment">
             <!-- User image -->
-            <img class="img-circle img-sm" src="dist/img/user3-128x128.jpg" alt="User Image">
+           
 
-            <div class="comment-text">
+            <div class="comment-text" style='margin-left: 0px!important;'>
               <span class="username">
-                Maria Gonzales
-                <span class="text-muted float-right">8:03 PM Today</span>
+                  <?php echo $Au[0]['name'] ?>
+                <span class="text-muted float-right"><?php echo $res[0]['created_at'] ?></span>
               </span><!-- /.username -->
-              It is a long established fact that a reader will bedistracted
-              by the readable content of a page when looking at its layout.
-            </div>
-            <!-- /.comment-text -->
-          </div>
-          <!-- /.card-comment -->
-          <div class="card-comment">
-            <!-- User image -->
-            <img class="img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="User Image">
-
-            <div class="comment-text">
-              <span class="username">
-                Luna Stark
-                <span class="text-muted float-right">8:03 PM Today</span>
-              </span><!-- /.username -->
-              It is a long established fact that a reader will bedistracted
-              by the readable content of a page when looking at its layout.
+            <?php echo $res[0]['content']; ?>
             </div>
             <!-- /.comment-text -->
           </div>
@@ -89,9 +111,9 @@
         <br>
         <div >
         <div class="card-footer">
-                <form action="#" method="post">
+                <form action="" method="post">
                   <div class="input-group">
-                    <input type="text" name="message" placeholder="Type Message ..." class="form-control" >
+                    <input type="text" name="comment" placeholder="Type Message ..." class="form-control" >
                     <span class="input-group-append">
                       <button type="submit" class="btn btn-primary">Send</button>
                     </span>
@@ -115,18 +137,17 @@
    </section>
     <!-- /.content -->
 
-    <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
-      <i class="fas fa-chevron-up"></i>
-    </a>
+    
   </div>
   <!-- /.content-wrapper -->
 
-  <footer class="main-footer"  style="margin-left: 0px !important;">
-    <div class="float-right d-none d-sm-block">
-      <b>Version</b> 3.0.5
+  <footer class="main-footer" style="margin-left: 0px!important;">
+    <!-- To the right -->
+    <div class="float-right d-none d-sm-inline">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
     </div>
-    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-    reserved.
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2020 heinhtet .</strong> All rights reserved.
   </footer>
 
   <!-- Control Sidebar -->
@@ -138,12 +159,12 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="../dist/js/demo.js"></script>
+<script src="dist/js/demo.js"></script>
 </body>
 </html>
