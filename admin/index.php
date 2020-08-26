@@ -5,7 +5,9 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 
 }
-
+if($_SESSION['role']!=1){
+  header('Location: login.php');
+}
 ?>
 <?php include('header.php');?>
 
@@ -19,7 +21,7 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
                 <h3 class="card-title"> Blog listings</h3>
               </div>
              <?php
-             $j=0;
+        
              if(!empty($_GET['pageno'])){
               $pageno=$_GET['pageno'];
             }else{
@@ -50,7 +52,7 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
              $stmt= $pdo->prepare("SELECT * FROM  posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
              $stmt->execute();
              $user=$stmt->fetchAll();
-             print_r(count($user));
+             
              
 
             }
@@ -122,7 +124,8 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   <ul class="pagination">
   <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
     <li class="page-item <?php if($pageno <= 1){echo 'disabled';}?>">
-    <a class="page-link"    href="<?php if($pageno <= 1){echo '#';}else{echo '?pageno='.($pageno-1);} ?>">Previous</a>    </li>
+    <a class="page-link"    href="<?php if($pageno <= 1){echo '#';}
+    else{echo '?pageno='.($pageno-1);} ?>">Previous</a>    </li>
     <li class="page-item"><a class="page-link" href="?pageno=<?php echo $pageno ?>"><?php echo $pageno ?></a></li>
     
     <li class="page-item <?php if($pageno >= $total_pages){echo 'disabled';} ?>" >

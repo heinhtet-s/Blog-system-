@@ -20,11 +20,12 @@ if ($_POST) {
         echo"<script>document.location.href = 'register.php',true;</script>";
     }else{
         
-        $pdostatement=$pdo->prepare("INSERT INTO users(name,email,password) VALUES(:name,:email,:password)  ");
+        $pdostatement=$pdo->prepare("INSERT INTO users(name,email,password,row) VALUES(:name,:email,:password,:row)  ");
         $result=$pdostatement->execute([
             ":name"=>$_POST['name'],
             ":email"=>$_POST['email'],
             ":password"=>$_POST['password'],
+            ":row"=>0,
         ]);
       
      if($result ){

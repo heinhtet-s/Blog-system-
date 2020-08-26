@@ -4,6 +4,8 @@ session_start();
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 
+}if($_SESSION['role']!=1){
+  header('Location: login.php');
 }
 
 ?>
@@ -19,7 +21,7 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
                 <h3 class="card-title"> Blog listings</h3>
               </div>
              <?php
-             $j=0;
+         
              if(!empty($_GET['pageno'])){
               $pageno=$_GET['pageno'];
             }else{
@@ -41,16 +43,16 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
             $user=$stmt->fetchAll();}
             else{
            $searchkey=$_GET['search'];
-           $stmt=$pdo->prepare("SELECT * FROM users WHERE title LIKE '%$searchkey%' ");
+           $stmt=$pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchkey%' ");
              $stmt->execute();
              $rawuser=$stmt->fetchAll();
              
              
              $total_pages=ceil(count($rawuser)/$numOfrecs);
-             $stmt= $pdo->prepare("SELECT * FROM  posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
+             $stmt= $pdo->prepare("SELECT * FROM  users WHERE name LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
              $stmt->execute();
              $user=$stmt->fetchAll();
-             print_r(count($user));
+           
              
 
             }
