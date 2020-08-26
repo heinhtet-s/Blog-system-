@@ -30,7 +30,9 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
     <section class="content-header">
       <div class="container-fluid">
         
-        
+      <div class="float-right d-none d-sm-inline">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
+    </div>
             <h1 style="text-align: center;">Blog Site</h1>
          
           
@@ -38,7 +40,20 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
       </div><!-- /.container-fluid -->
     </section>
 <?php
+if(!empty($_GET['pageno'])){
+  $pageno=$_GET['pageno'];
+
+}else{
+  $pageno=1;
+}
+$numOfbl=6;
+$Offset=($pageno-1)*$numOfbl;
+
  $stmt=$pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+ $stmt->execute();
+ $rawresult=$stmt->fetchAll();
+ $total_pages=ceil(count($rawresult)/$numOfbl);
+ $stmt=$pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $Offset,$numOfbl");
  $stmt->execute();
  $result=$stmt->fetchAll();
 ?>
@@ -92,12 +107,24 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
    
    
   </div>
+  <nav aria-label="Page navigation example" style ="float: right;">
+  <ul class="pagination">
+  <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+    <li class="page-item <?php if($pageno <= 1){echo 'disabled';}?>">
+    <a class="page-link"    href="<?php if($pageno <= 1){echo '#';}
+    else{echo '?pageno='.($pageno-1);} ?>">Previous</a>    </li>
+    <li class="page-item"><a class="page-link" href="?pageno=<?php echo $pageno ?>"><?php echo $pageno ?></a></li>
+    
+    <li class="page-item <?php if($pageno >= $total_pages){echo 'disabled';} ?>" >
+    <a class="page-link"    href="<?php if($pageno >=  $total_pages){echo '#';}else{echo '?pageno='.($pageno+1);} ?>">Next</a>    </li>
+
+    <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages?>">Last</a></li>
+  </ul>
+</nav>
   <!-- /.content-wrapper -->
   <footer class="main-footer" style="margin-left: 0px!important;">
     <!-- To the right -->
-    <div class="float-right d-none d-sm-inline">
-    <a href="logout.php" class="btn btn-danger">Logout</a>
-    </div>
+    
     <!-- Default to the left -->
     <strong>Copyright &copy; 2020 heinhtet .</strong> All rights reserved.
   </footer>

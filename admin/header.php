@@ -34,7 +34,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3" method="get" action="index.php">
+    <?php
+    
+    $link=$_SERVER['PHP_SELF'];
+    $link_array=explode('/',$link);
+    $page=end($link_array);
+    ?>
+    <form class="form-inline ml-3" method="get" action="<?php $page=='index.php' ? 'index.php':'user_index.php';?>">
       <div class="input-group input-group-sm">
         <input class="form-control form-control-navbar" type="search" placeholder="Search" name="search" aria-label="Search" required>
         <div class="input-group-append">
@@ -57,6 +63,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
            style="opacity: .8">
       <span class="brand-text font-weight-light">Blog</span>
     </a>
+    
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -77,10 +84,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
          
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            <a href="index.php" class="nav-link">
+              <i class="nav-icon fa fa-th"></i>
               <p>
                 Blog
+                
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="user_index.php" class="nav-link">
+              <i class="nav-icon fa fa-th"></i>
+              <p>
+                User
                 
               </p>
             </a>

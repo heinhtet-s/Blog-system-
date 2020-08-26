@@ -10,12 +10,21 @@ $result=$pdostatement->fetchAll();
 $blogId=$_GET['id'];
 $pdostatement1=$pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
 $pdostatement1->execute();
-$res=$pdostatement1->fetchAll();
+$cmres=$pdostatement1->fetchAll();
 
-$authur=$res[0]['authur_id'];
-        $pdostatement=$pdo->prepare("SELECT * FROM users WHERE id=$authur");
-        $pdostatement->execute();
-        $Au=$pdostatement->fetchAll();
+$Au=[];
+
+if($cmres){
+  foreach($cmres as $key=>$value){
+ 
+    $authur=$cmres[$key]['authur_id'];
+    $pdostatement=$pdo->prepare("SELECT * FROM users WHERE id=$authur");
+    $pdostatement->execute();
+    $Au[]=$pdostatement->fetchAll();
+  }
+ 
+}
+
 if($_POST){
   $comment=$_POST['comment'];
   $pdostatement=$pdo->prepare("INSERT INTO comments(content,authur_id,post_id) VALUES(:content,:authur_id,:post_id)  ");
@@ -95,14 +104,20 @@ if($_POST){
           <div class="card-comment">
             <!-- User image -->
            
+          <?php if(!empty($cmres)){ ?>
 
+          
             <div class="comment-text" style='margin-left: 0px!important;'>
+              
+              <?php foreach($cmres as $key=>$value){ ?>
               <span class="username">
-                  <?php echo $Au[0]['name'] ?>
-                <span class="text-muted float-right"><?php echo $res[0]['created_at'] ?></span>
-              </span><!-- /.username -->
-            <?php echo $res[0]['content']; ?>
+<?php echo $Au[$key][0]['name'] ?>
+<span class="text-muted float-right"><?php echo $cmres[0]['created_at'] ?></span>
+</span><!-- /.username -->
+<?php echo $cmres[$key]['content']; ?>
+              <?php } ?>
             </div>
+          <?php } ?>
             <!-- /.comment-text -->
           </div>
           <!-- /.card-comment -->
