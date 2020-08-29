@@ -26,6 +26,12 @@ if($cmres){
 }
 
 if($_POST){
+  if(empty($_POST['comment'])){
+    
+      $cmd_error='Comment cannot be null';
+      
+    }else{
+   
   $comment=$_POST['comment'];
   $pdostatement=$pdo->prepare("INSERT INTO comments(content,authur_id,post_id) VALUES(:content,:authur_id,:post_id)  ");
         $result=$pdostatement->execute([
@@ -39,7 +45,7 @@ if($_POST){
          header('Location: detail.php?id='.$blogId);
       }
       }
-    
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -125,6 +131,8 @@ if($_POST){
         <!-- /.card-footer -->
         <br>
         <div >
+        <p class="text-danger"><?php echo empty($cmd_error)? '':  $cmd_error; ?></p>
+      
         <div class="card-footer">
                 <form action="" method="post">
                   <div class="input-group">

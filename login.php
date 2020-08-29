@@ -15,19 +15,19 @@ if ($_POST) {
     $user=$stat->fetch(PDO::FETCH_ASSOC);
 
    if($user){
-    if($password==$user['password']){
+    if(password_verify($password,$user['password'])){
         $_SESSION['user_id']=$user['id'];
         $_SESSION['logged_in']=time();
         $_SESSION['username']=$user['name'];
         $_SESSION['role']=0;
         header('Location: index.php');
-    }
+    }else{echo "<script>alert('incorrect email or password'); </script>";}
   
    
     
     # code...
 }
-echo "<script>alert('incorrect email or password'); </script>";
+
 }
 
 

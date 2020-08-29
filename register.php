@@ -2,6 +2,22 @@
 session_start();
 require 'config/config.php';
 if ($_POST) {
+  if(empty($_POST['name']) ||empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) <4 ){
+    if(empty($_POST['name'])){
+      $name_error='name cannot be null';
+      
+    }
+   if(empty($_POST['email'])){
+     $email_error='email cannot be null';
+   }
+   if(empty($_POST['password'])){
+     $password_error='Password cannot be null';
+   }
+
+    if(strlen($_POST['password'])<4) {
+   $password_error='Password should be 4 characters at least';
+  } }
+  else{
     $email=$_POST['email'];
     $name=$_POST['name'];
     $password=$_POST['password'];
@@ -19,12 +35,12 @@ if ($_POST) {
         echo "<script>alert('email duplicated');</script>";
         echo"<script>document.location.href = 'register.php',true;</script>";
     }else{
-        
+        $password=password_hash($_POST['password'],PASSWORD_DEFAULT);
         $pdostatement=$pdo->prepare("INSERT INTO users(name,email,password,row) VALUES(:name,:email,:password,:row)  ");
         $result=$pdostatement->execute([
             ":name"=>$_POST['name'],
             ":email"=>$_POST['email'],
-            ":password"=>$_POST['password'],
+            ":password"=>$password,
             ":row"=>0,
         ]);
       
@@ -33,6 +49,7 @@ if ($_POST) {
       
         echo"<script>document.location.href = 'login.php',true;</script>";
     }
+  }
     }
 }
   
@@ -71,14 +88,16 @@ if ($_POST) {
       <p class="login-box-msg">Register New accounts</p>
 
       <form action="register.php" method="post">
+      <p class="text-danger"><?php echo empty($name_error)? '':  $name_error; ?></p>
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="name" placeholder="Name">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fa fa-envelope"></span>
+              <span class="fa fa-user"></span>
             </div>
           </div>
         </div>
+        <p class="text-danger"><?php echo empty($email_error)? '':  $email_error; ?></p>
         <div class="input-group mb-3">
           <input type="email" class="form-control" name="email" placeholder="Email">
           <div class="input-group-append">
@@ -87,6 +106,7 @@ if ($_POST) {
             </div>
           </div>
         </div>
+        <p class="text-danger"><?php echo empty($password_error)? '':  $password_error; ?></p>
         <div class="input-group mb-3">
           <input type="password" class="form-control" name="password" placeholder="Password">
           <div class="input-group-append">

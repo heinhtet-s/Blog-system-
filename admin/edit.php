@@ -13,6 +13,17 @@ $pdostatement->execute();
 $result=$pdostatement->fetchAll();
 
 if($_POST){
+  if(empty($_POST['title']) ||empty($_POST['content']) ){
+    if(empty($_POST['title'])){
+      $title_error='Title cannot be null';
+      
+    }
+   if(empty($_POST['content'])){
+     $content_error='Content cannot be null';
+   }
+   
+  }else{
+
     $id=$_POST['id'];
     $title=$_POST['title'];
     $content=$_POST['content'];
@@ -44,6 +55,7 @@ if($result){
   
     echo"<script>document.location.href = 'index.php',true;</script>";
 }
+  }
 }
 
 ?>
@@ -64,19 +76,19 @@ if($result){
            <form action="" enctype="multipart/form-data" method="post">
            <input type="hidden" name="id" value="<?php echo$result[0]['id']?>">
          <div class="form-group">
-             <label for="">title</label>
+             <label for="">title</label><p class="text-danger"><?php echo empty($title_error)? '':  $title_error; ?></p>
       <input type="text" name="title" class="form-control" id="" value="<?php echo $result[0]['title'] ?> ">
 
          </div>
          
 
          <div class="form-group">
-             <label for="">Content</label>
+             <label for="">Content</label><p class="text-danger"><?php echo empty($content_error)? '':  $content_error; ?></p>
     <textarea name="content" id="" cols="30" rows="5" class="form-control"><?php echo $result[0]['content']?></textarea>
 
          </div>
          <div class="form-group">
-            <div><label for="">image</label></div> 
+            <div><label for="">image</label>
               <a href="../images/<?php echo$result[0]['image']?>">
             <img src="../images/<?php echo$result[0]['image']?>" alt="" class="col-md-2 mb-3">
             </a>

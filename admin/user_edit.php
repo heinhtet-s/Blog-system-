@@ -15,6 +15,19 @@ $pdostatement->execute();
 $res=$pdostatement->fetch(PDO::FETCH_ASSOC);}
 
 if($_POST){
+  if(empty($_POST['name']) ||empty($_POST['email'])  ){
+    if(empty($_POST['name'])){
+      $name_error='name cannot be null';
+      
+    }
+   if(empty($_POST['email'])){
+     $email_error='email cannot be null';
+   }
+  
+     }elseif(!empty($_POST['password']) && strlen($_POST['password']) <4  ){
+    $password_error='Password should be 4 characters at least';
+  }
+  else{
     if(empty($_POST['isAdmin'])){
         $row=0;
     }else{
@@ -23,9 +36,14 @@ if($_POST){
     $id=$_POST['id'];
     $name=$_POST['name'];
     $email=$_POST['email'];
-    $password=$_POST['password'];
     
-    $pdostatement=$pdo->prepare("UPDATE  users SET name='$name',email='$email',password='$password',row='$row' WHERE id='$id'");
+    $password=password_hash($_POST['password'],PASSWORD_DEFAULT);
+    if(empty($password)){
+      $pdostatement=$pdo->prepare("UPDATE  users SET name='$name',email='$email',row='$row' WHERE id='$id'");
+    }else{
+      $pdostatement=$pdo->prepare("UPDATE  users SET name='$name',email='$email',row='$row',password='$password' WHERE id='$id'");
+    }
+    
     $result=$pdostatement->execute();
        
     
@@ -34,7 +52,7 @@ if($result){
   
     echo"<script>document.location.href = 'user_index.php',true;</script>";
 }
-        
+}     
         }
     
 
@@ -53,24 +71,24 @@ if($result){
             
               <!-- /.card-header -->
  <div class="card-body">
-           <form action="user_edit.php" enctype="multipart/form-data" method="post">
+           <form action="" enctype="multipart/form-data" method="post">
            <input type="hidden" name="id" value="<?php echo $res['id'] ?>">
          <div class="form-group">
-             <label for="">name</label>
+             <label for="">name</label><p class="text-danger"><?php echo empty($name_error)? '':  $name_error; ?></p>
       <input type="text" name="name" class="form-control" id="" value="<?php echo $res['name']?>">
 
          </div>
          
 
          <div class="form-group">
-             <label for="email">Email</label>
+             <label for="email">Email</label><p class="text-danger"><?php echo empty($email_error)? '':  $email_error; ?></p>
              <input type="email" name="email" class="form-control" value="<?php echo $res['email']?>"> 
 
          </div>
          <div class="form-group">
-            <div><label for="">Password</label></div> 
-             
-      <input type="password" name="password" class="form-control" value="<?php echo $res['password']?>">
+       <label for="">Password</label><p class="text-danger"><?php echo empty($password_error)? '':  $password_error; ?></p>
+             <small>password is already added in this filed</small>
+      <input type="password" name="password" class="form-control" >
 
          </div>
          <div class="form-check">
@@ -78,7 +96,7 @@ if($result){
     <label class="form-check-label" for="exampleCheck1" >is Admin</label>
   </div>
          <div class="form-group">
-             <input type="submit" value="Create" class="btn btn-info">
+             <input type="submit" value="Update" class="btn btn-info">
           <a href="index.php" class="btn btn-success">back</a>
          </div>
 </form>

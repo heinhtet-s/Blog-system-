@@ -59,7 +59,7 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
              ?>
               <!-- /.card-header -->
               <div class="card-body">
-                <a href="user_add.php" class="btn btn-success">Create New block post</a>
+                <a href="user_add.php" class="btn btn-success">Create New User</a>
                 <div><br></div>
                 <table class="table table-bordered">
                   <thead>                  

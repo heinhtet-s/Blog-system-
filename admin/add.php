@@ -8,7 +8,19 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 }
 if($_POST){
-  
+  if(empty($_POST['title']) ||empty($_POST['content']) || empty($_FILES['image'])){
+    if(empty($_POST['title'])){
+      $title_error='Title cannot be null';
+      
+    }
+   if(empty($_POST['content'])){
+     $content_error='Content cannot be null';
+   }
+   if(empty($_FILES['image'])){
+     $image_error='Image cannot be null';
+   }
+
+  }else{
     $file='../images/'.($_FILES['image']['name']);
     $imageType=pathinfo($file,PATHINFO_EXTENSION);
      $imageType=strtoupper($imageType);
@@ -28,6 +40,7 @@ if($result){
   
     echo"<script>document.location.href = 'index.php',true;</script>";
 }
+  }
 }
 
 ?>
@@ -47,18 +60,18 @@ if($result){
  <div class="card-body">
            <form action="add.php" enctype="multipart/form-data" method="post">
          <div class="form-group">
-             <label for="">title</label>
+             <label for="">title</label><p class="text-danger"><?php echo empty($title_error)? '':  $title_error; ?></p>
       <input type="text" name="title" class="form-control" id="">
 
          </div>
 
          <div class="form-group">
-             <label for="">Content</label>
+             <label for="">Content</label><p class="text-danger"><?php echo empty($content_error)? '':  $content_error; ?></p>
     <textarea name="content" id="" cols="30" rows="5" class="form-control"></textarea>
 
          </div>
          <div class="form-group">
-             <label for="">image</label>
+             <label for="">image</label><p class="text-danger"><?php echo empty($image_error)? '':  $image_error; ?></p>
       <input type="file" name="image" class="form-control" id="">
 
          </div>
