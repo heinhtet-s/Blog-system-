@@ -1,6 +1,8 @@
 <?php
 require 'config/config.php';
+
 session_start();
+require 'config/common.php';
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 }
@@ -74,7 +76,7 @@ $Offset=($pageno-1)*$numOfbl;
       <div class="card card-widget">
         <div class="card-header">
           <div class="card-title" style="text-align:center !important;float:none;">
-              <h4><?php echo $u['title']; ?></h4>
+              <h4><?php echo escape($u['title']); ?></h4>
           </div>
           
           <!-- /.card-tools -->

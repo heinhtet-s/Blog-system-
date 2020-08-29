@@ -1,6 +1,7 @@
 <?php
 require '../config/config.php';
 session_start();
+require '../config/common.php';
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 
@@ -81,9 +82,9 @@ if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
                     <tr>
 
                       <td><?php echo $i; ?></td>
-                      <td><?php echo $u['name']; ?></td>
+                      <td><?php echo escape($u['name']); ?></td>
                       
-                    <td><?php echo $u['email']; ?></td>
+                    <td><?php echo escape($u['email']); ?></td>
                     <td><?php if($u['row']==1){echo "Admin";}else{echo "User";}?></td>
                       
                       <td>

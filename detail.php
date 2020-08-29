@@ -1,6 +1,7 @@
 <?php
 require 'config/config.php';
 session_start();
+require 'config/common.php';
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 }
@@ -87,7 +88,7 @@ if($_POST){
       <div class="card card-widget">
        
         <div class="card-header" style="text-align:center !important;float:none;">
-              <h1><?php echo $result[0]['title'];?> </h1>
+              <h1><?php  echo escape($result[0]['title']);?> </h1>
           </div>
           <!-- /.user-block -->
         
@@ -98,7 +99,7 @@ if($_POST){
           <img  class="img-fluid" src="images/<?php echo $result[0]['image']?>" alt="Photo"  >
           <br>
           <hr>
-          <p><?php echo $result[0]['content'];?></p>
+          <p><?php echo escape($result[0]['content']);?></p>
            <br>
            <hr>
            <h2>Comment</h2>
@@ -117,10 +118,10 @@ if($_POST){
               
               <?php foreach($cmres as $key=>$value){ ?>
               <span class="username">
-<?php echo $Au[$key][0]['name'] ?>
-<span class="text-muted float-right"><?php echo $cmres[0]['created_at'] ?></span>
+<?php echo escape($Au[$key][0]['name']) ?>
+<span class="text-muted float-right"><?php echo escape($cmres[0]['created_at']) ?></span>
 </span><!-- /.username -->
-<?php echo $cmres[$key]['content']; ?>
+<?php echo escape($cmres[$key]['content']); ?>
               <?php } ?>
             </div>
           <?php } ?>
@@ -135,6 +136,7 @@ if($_POST){
       
         <div class="card-footer">
                 <form action="" method="post">
+                <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']?>">
                   <div class="input-group">
                     <input type="text" name="comment" placeholder="Type Message ..." class="form-control" >
                     <span class="input-group-append">

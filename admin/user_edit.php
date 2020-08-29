@@ -2,6 +2,7 @@
 <?php
 require '../config/config.php';
 session_start();
+require '../config/common.php';
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 
@@ -72,17 +73,18 @@ if($result){
               <!-- /.card-header -->
  <div class="card-body">
            <form action="" enctype="multipart/form-data" method="post">
+           <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']?>">
            <input type="hidden" name="id" value="<?php echo $res['id'] ?>">
          <div class="form-group">
              <label for="">name</label><p class="text-danger"><?php echo empty($name_error)? '':  $name_error; ?></p>
-      <input type="text" name="name" class="form-control" id="" value="<?php echo $res['name']?>">
+      <input type="text" name="name" class="form-control" id="" value="<?php echo escape($res['name'])?>">
 
          </div>
          
 
          <div class="form-group">
              <label for="email">Email</label><p class="text-danger"><?php echo empty($email_error)? '':  $email_error; ?></p>
-             <input type="email" name="email" class="form-control" value="<?php echo $res['email']?>"> 
+             <input type="email" name="email" class="form-control" value="<?php echo escape($res['email'])?>"> 
 
          </div>
          <div class="form-group">

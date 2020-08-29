@@ -1,6 +1,7 @@
 <?php
 require '../config/config.php';
 session_start();
+require '../config/common.php';
 if(empty($_SESSION['user_id'])&& empty($_SESSION['logged_in'])){
   header('Location: login.php');
 
@@ -80,9 +81,9 @@ if($_SESSION['role']!=1){
                     <tr>
 
                       <td><?php echo $i; ?></td>
-                      <td><?php echo $u['title']; ?></td>
+                      <td><?php echo escape($u['title']); ?></td>
                       
-                    <td><?php echo substr($u['content'],0,50) ?></td>
+                    <td><?php echo substr( escape($u['content']),0,50) ?></td>
                     
                       
                       <td>

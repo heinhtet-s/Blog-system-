@@ -40,6 +40,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     $link_array=explode('/',$link);
     $page=end($link_array);
     ?>
+    <?php if($page=="index.php" || $page=="user_index.php"){ ?>
     <form class="form-inline ml-3" method="get" action="<?php $page=='index.php' ? 'index.php':'user_index.php';?>">
       <div class="input-group input-group-sm">
         <input class="form-control form-control-navbar" type="search" placeholder="Search" name="search" aria-label="Search" required>
@@ -50,7 +51,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
       </div>
     </form>
-
+    <?php } ?>
    
   </nav>
   <!-- /.navbar -->
